@@ -10,7 +10,7 @@ plugins {
 }
 
 project.group = "org.kwebparser"
-project.version = "0.0.16"
+project.version = "0.0.17"
 val artifactID = "kwebparser"
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
 val junitVersion = "5.3.1"
@@ -20,8 +20,8 @@ val jsoupVersion = "1.10.2"
 dependencies {
     implementation(kotlin("stdlib", kotlinVersion))
     implementation(kotlin("reflect", kotlinVersion))
-    implementation("net.sourceforge.htmlunit:htmlunit:$htmlUnitVersion")
-    implementation("org.jsoup:jsoup:$jsoupVersion")
+    api("net.sourceforge.htmlunit:htmlunit:$htmlUnitVersion")
+    api("org.jsoup:jsoup:$jsoupVersion")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
     testImplementation("org.mockito:mockito-inline:2.8.47")
