@@ -3,19 +3,19 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.21"
-    id("com.jfrog.bintray") version "1.8.1"
+    kotlin("jvm") version "1.3.60"
+    id("com.jfrog.bintray") version "1.8.5"
     `maven-publish`
     `java-library`
 }
 
 project.group = "org.kwebparser"
-project.version = "0.0.17"
+project.version = "0.0.18"
 val artifactID = "kwebparser"
 val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
 val junitVersion = "5.3.1"
-val htmlUnitVersion = "2.33"
-val jsoupVersion = "1.10.2"
+val htmlUnitVersion = "2.43.0"
+val jsoupVersion = "1.13.1"
 
 dependencies {
     implementation(kotlin("stdlib", kotlinVersion))
