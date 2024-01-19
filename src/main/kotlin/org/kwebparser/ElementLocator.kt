@@ -5,5 +5,6 @@ import org.jsoup.select.Elements
 
 interface ElementLocator {
     fun findElement(): Element?
+
     fun findElements(): Elements
 }

@@ -7,12 +7,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class AnnotatedPropertyTest {
-
     @Target(AnnotationTarget.PROPERTY)
     @Retention(AnnotationRetention.RUNTIME)
     annotation class Foo
 
-    data class TestData(@Foo val id: Int)
+    data class TestData(
+        @Foo val id: Int,
+    )
 
     @Test
     fun test() {
@@ -27,5 +28,4 @@ class AnnotatedPropertyTest {
         assertEquals(1, idProp.annotations.size, "Bug! No annotations found!")
         assertNotNull(idProp.findAnnotation<Foo>())
     }
-
 }

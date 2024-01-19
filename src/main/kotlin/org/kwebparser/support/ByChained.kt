@@ -3,9 +3,6 @@ package org.kwebparser.support
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.Serializable
-import java.util.*
-import kotlin.NoSuchElementException
-import kotlin.String
 
 /**
  * Mechanism used to locate elements within a document using a series of other lookups.  This class
@@ -19,11 +16,11 @@ import kotlin.String
  * <var>by1</var>.
  */
 class ByChained(private val bys: List<By>) : By(), Serializable {
-
     override fun findElement(searchFrom: Element): Element {
         val elements = findElements(searchFrom)
-        if (elements.isEmpty())
+        if (elements.isEmpty()) {
             throw NoSuchElementException("Cannot locate an searchFrom using " + toString())
+        }
         return elements[0]
     }
 
@@ -32,9 +29,9 @@ class ByChained(private val bys: List<By>) : By(), Serializable {
             return Elements()
         }
 
-        var elems: List<Element>? = null
+        var elems: Elements? = null
         for (by in bys) {
-            val newElems = ArrayList<Element>()
+            val newElems = Elements()
 
             if (elems == null) {
                 newElems.addAll(by.findElements(searchFrom))
@@ -46,7 +43,7 @@ class ByChained(private val bys: List<By>) : By(), Serializable {
             elems = newElems
         }
 
-        return Elements(elems)
+        return elems ?: Elements()
     }
 
     override fun toString(): String {
@@ -65,5 +62,4 @@ class ByChained(private val bys: List<By>) : By(), Serializable {
     companion object {
         private const val serialVersionUID = 1563769051170172451L
     }
-
 }

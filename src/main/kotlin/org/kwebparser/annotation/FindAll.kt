@@ -19,13 +19,14 @@ import org.kwebparser.support.ByAll
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS, AnnotationTarget.FILE)
 @PageFactoryFinder(FindAll.FindByBuilder::class)
 annotation class FindAll(vararg val value: FindBy) {
-
     class FindByBuilder : org.kwebparser.AbstractFindByBuilder() {
-        override fun buildIt(annotation: Annotation, property: Any): By {
+        override fun buildIt(
+            annotation: Annotation,
+            property: Any,
+        ): By {
             val findBys = annotation as FindAll
             assertValidFindAll(findBys)
             return ByAll(findBys.value.mapNotNull { buildByFromFindBy(it) })
         }
     }
-
 }

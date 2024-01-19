@@ -8,7 +8,6 @@ import java.io.Serializable
  * Mechanism used to locate elements within a document
  */
 abstract class By {
-
     /**
      * Find a single searchFrom. Override this method if necessary.
      *
@@ -51,19 +50,12 @@ abstract class By {
     }
 
     class ById(private val id: String?) : By(), Serializable {
-
         init {
-            if (id == null) {
-                throw IllegalArgumentException("Cannot find elements when the id is null.")
-            }
+            requireNotNull(id) { "Cannot find elements when the id is null." }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return Elements(searchFrom.getElementById(id))
-        }
-
-        override fun findElement(searchFrom: Element): Element {
-            return searchFrom.getElementById(id)
+            return Elements(searchFrom.getElementById(id!!))
         }
 
         override fun toString(): String {
@@ -76,15 +68,15 @@ abstract class By {
     }
 
     class ByLinkText(private val linkText: String?) : By(), Serializable {
-
         init {
-            if (linkText == null) {
-                throw IllegalArgumentException("Cannot find elements when the link text is null.")
-            }
+            requireNotNull(linkText) { "Cannot find elements when the link text is null." }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return Elements(searchFrom.getElementsByTag("a").filter { it.text() == linkText })
+            return Elements(
+                searchFrom.getElementsByTag("a")
+                    .filterIndexed { _: Int, element: Element -> element.text() == linkText },
+            )
         }
 
         override fun toString(): String {
@@ -97,15 +89,15 @@ abstract class By {
     }
 
     class ByPartialLinkText(private val partialLinkText: String?) : By(), Serializable {
-
         init {
-            if (partialLinkText == null) {
-                throw IllegalArgumentException("Cannot find elements when the link text is null.")
-            }
+            requireNotNull(partialLinkText) { "Cannot find elements when the link text is null." }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return Elements(searchFrom.getElementsByTag("a").filter { it.text().contains(partialLinkText!!) })
+            return Elements(
+                searchFrom.getElementsByTag("a")
+                    .filterIndexed { _: Int, element: Element -> element.text().contains(partialLinkText!!) },
+            )
         }
 
         override fun toString(): String {
@@ -118,15 +110,12 @@ abstract class By {
     }
 
     class ByName(private val name: String?) : By(), Serializable {
-
         init {
-            if (name == null) {
-                throw IllegalArgumentException("Cannot find elements when name text is null.")
-            }
+            requireNotNull(name) { "Cannot find elements when name text is null." }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return searchFrom.getElementsByAttributeValue("name", name)
+            return searchFrom.getElementsByAttributeValue("name", name!!)
         }
 
         override fun toString(): String {
@@ -139,15 +128,12 @@ abstract class By {
     }
 
     class ByTagName(private val tagName: String?) : By(), Serializable {
-
         init {
-            if (tagName == null) {
-                throw IllegalArgumentException("Cannot find elements when the tag name is null.")
-            }
+            requireNotNull(tagName) { "Cannot find elements when the tag name is null." }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return searchFrom.getElementsByTag(tagName)
+            return searchFrom.getElementsByTag(tagName!!)
         }
 
         override fun toString(): String {
@@ -160,17 +146,12 @@ abstract class By {
     }
 
     class ByClassName(private val className: String?) : By(), Serializable {
-
         init {
-            if (className == null) {
-                throw IllegalArgumentException(
-                    "Cannot find elements when the class name expression is null."
-                )
-            }
+            requireNotNull(className) { "Cannot find elements when the class name expression is null." }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return searchFrom.getElementsByClass(className)
+            return searchFrom.getElementsByClass(className!!)
         }
 
         override fun toString(): String {
@@ -183,15 +164,12 @@ abstract class By {
     }
 
     class ByCssSelector(private val cssSelector: String?) : By(), Serializable {
-
         init {
-            if (cssSelector == null) {
-                throw IllegalArgumentException("Cannot find elements when the selector is null")
-            }
+            requireNotNull(cssSelector) { "Cannot find elements when the selector is null" }
         }
 
         override fun findElements(searchFrom: Element): Elements {
-            return searchFrom.select(cssSelector)
+            return searchFrom.select(cssSelector!!)
         }
 
         override fun toString(): String {

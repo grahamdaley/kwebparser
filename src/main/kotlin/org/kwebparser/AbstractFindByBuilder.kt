@@ -7,8 +7,12 @@ import org.kwebparser.support.By
 import java.util.*
 
 abstract class AbstractFindByBuilder {
-    abstract fun buildIt(annotation: Annotation, property: Any): By
+    abstract fun buildIt(
+        annotation: Annotation,
+        property: Any,
+    ): By
 
+    @Suppress("ReturnCount")
     protected fun buildByFromFindBy(findBy: FindBy): By? {
         assertValidFindBy(findBy)
 
@@ -60,12 +64,12 @@ abstract class AbstractFindByBuilder {
         if ("" != findBy.tagName) finders.add("tag name: " + findBy.tagName)
 
         // A zero count is okay: it means to look by name or id.
-        if (finders.size > 1) {
-            throw IllegalArgumentException(
-                String.format(
-                    "You must specify at most one location strategy. Number found: %d (%s)",
-                    finders.size, finders.toString()
-                )
+        require(finders.size <= 1) {
+            String.format(
+                Locale.US,
+                "You must specify at most one location strategy. Number found: %d (%s)",
+                finders.size,
+                finders.toString(),
             )
         }
     }
@@ -75,5 +79,4 @@ abstract class AbstractFindByBuilder {
             assertValidFindBy(findBy)
         }
     }
-
 }

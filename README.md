@@ -1,2 +1,2 @@
 # kwebparser
-A simple webparser using htmlunit and written in Kotlin
+A simple webparser framework using jsoup, written in Kotlin.

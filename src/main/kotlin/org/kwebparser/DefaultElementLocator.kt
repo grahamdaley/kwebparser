@@ -10,15 +10,10 @@ import kotlin.reflect.KProperty
  * understands the annotations [org.kwebparser.annotation.FindBy]
  * and [org.kwebparser.annotation.CacheLookup].
  */
-open class DefaultElementLocator
-/**
- * Use this constructor in order to process custom annotations.
- *
- * @param searchFrom The context to use when finding the required searchFrom
- * @param annotations AbstractAnnotations class implementation
- */
-    (private val searchFrom: Element, annotations: org.kwebparser.AbstractAnnotations) : org.kwebparser.ElementLocator {
-
+open class DefaultElementLocator(
+    private val searchFrom: Element,
+    annotations: org.kwebparser.AbstractAnnotations,
+) : ElementLocator {
     private val shouldCache: Boolean = annotations.isLookupCached
     private val by: By = annotations.buildBy()
     private var cachedElement: Element? = null
@@ -30,8 +25,9 @@ open class DefaultElementLocator
      * @param searchFromElement The context to use when finding the searchFrom
      * @param property The property on the Page Object that will hold the located value
      */
-    constructor(searchFromElement: Element, property: KProperty<*>) : this(searchFromElement,
-        org.kwebparser.Annotations(property)
+    constructor(searchFromElement: Element, property: KProperty<*>) : this(
+        searchFromElement,
+        org.kwebparser.Annotations(property),
     )
 
     /**

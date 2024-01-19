@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Make GitHub release and publish to Maven Central
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      - name: Set up JDK
+        id: setup-jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Gradle build
+        run: ./gradlew build
+      - name: GitHub release
+        if: success()
+        uses: docker://antonyurchenko/git-release:latest
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          ALLOW_TAG_PREFIX: "true"
+        with:
+          args: |
+            build/libs/KWebParser*.jar
+      - name: Publish to Maven Central
+        if: success()
+        run: ./gradlew publish closeAndReleaseStagingRepository
+        env:
+          GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+          GPG_SIGNING_PASSPHRASE: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}

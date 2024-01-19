@@ -1,18 +1,22 @@
 package org.kwebparser
 
-import org.kwebparser.annotation.*
+import org.kwebparser.annotation.CacheLookup
+import org.kwebparser.annotation.FindAll
+import org.kwebparser.annotation.FindBy
+import org.kwebparser.annotation.FindBys
+import org.kwebparser.annotation.PageFactoryFinder
 import org.kwebparser.support.By
 import org.kwebparser.support.ByIdOrName
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 
-class Annotations
 /**
  * @param property expected to be an element in a Page Object
  */
-    (protected val property: KProperty<*>) : org.kwebparser.AbstractAnnotations() {
-
+class Annotations(
+    private val property: KProperty<*>,
+) : AbstractAnnotations() {
     /**
      * {@inheritDoc}
      *
@@ -41,7 +45,7 @@ class Annotations
             if (pageFactoryFinder != null) {
                 try {
                     builder = pageFactoryFinder.value.createInstance()
-                } catch (roe: ReflectiveOperationException) {
+                } catch (_: ReflectiveOperationException) {
                 }
             }
             if (builder != null) {
@@ -54,29 +58,56 @@ class Annotations
             ans = buildByFromDefault()
         }
 
-        if (ans == null) {
-            throw IllegalArgumentException("Cannot determine how to locate element $property")
-        }
-
         return ans
     }
 
-    protected fun buildByFromDefault(): By? {
+    private fun buildByFromDefault(): By {
         return ByIdOrName(property.name)
     }
 
-    protected fun assertValidAnnotations() {
+    private fun assertValidAnnotations() {
         val findBys = property.findAnnotation<FindBys>()
         val findAll = property.findAnnotation<FindAll>()
         val findBy = property.findAnnotation<FindBy>()
+
+        assertFindBysWithoutFindBy(findBys, findBy)
+        assertFindAllWithoutFindBy(findAll, findBy)
+        assertFindAllWithoutFindBys(findAll, findBys)
+    }
+
+    private fun assertFindBysWithoutFindBy(
+        findBys: FindBys?,
+        findBy: FindBy?,
+    ) {
         if (findBys != null && findBy != null) {
-            throw IllegalArgumentException("If you use a '@FindBys' annotation, " + "you must not also use a '@FindBy' annotation")
+            throw IllegalArgumentException(
+                "If you use a '@FindBys' annotation, " +
+                    "you must not also use a '@FindBy' annotation",
+            )
         }
+    }
+
+    private fun assertFindAllWithoutFindBy(
+        findAll: FindAll?,
+        findBy: FindBy?,
+    ) {
         if (findAll != null && findBy != null) {
-            throw IllegalArgumentException("If you use a '@FindAll' annotation, " + "you must not also use a '@FindBy' annotation")
+            throw IllegalArgumentException(
+                "If you use a '@FindAll' annotation, " +
+                    "you must not also use a '@FindBy' annotation",
+            )
         }
+    }
+
+    private fun assertFindAllWithoutFindBys(
+        findAll: FindAll?,
+        findBys: FindBys?,
+    ) {
         if (findAll != null && findBys != null) {
-            throw IllegalArgumentException("If you use a '@FindAll' annotation, " + "you must not also use a '@FindBys' annotation")
+            throw IllegalArgumentException(
+                "If you use a '@FindAll' annotation, " +
+                    "you must not also use a '@FindBys' annotation",
+            )
         }
     }
 }

@@ -1,74 +1,140 @@
-import com.jfrog.bintray.gradle.BintrayExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+group = "io.github.grahamdaley"
+version = "1.0.0"
 
-plugins {
-    kotlin("jvm") version "1.3.60"
-    id("com.jfrog.bintray") version "1.8.5"
-    `maven-publish`
-    `java-library`
+object Meta {
+    const val NAME = "kwebparser"
+    const val DESC = "A simple webparser using jsoup, written in Kotlin"
+    const val LICENSE = "Apache-2.0"
+    const val GITHUB_REPO = "grahamdaley/kwebparser"
+    const val RELEASE = "https://s01.oss.sonatype.org/service/local/"
+    const val SNAPSHOT = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
 }
 
-project.group = "org.kwebparser"
-project.version = "0.0.18"
-val artifactID = "kwebparser"
-val kotlinVersion = plugins.getPlugin(KotlinPluginWrapper::class.java).kotlinPluginVersion
-val junitVersion = "5.3.1"
-val htmlUnitVersion = "2.43.0"
-val jsoupVersion = "1.13.1"
+// ------------------------------------------------------ plugins
+
+// https://youtrack.jetbrains.com/issue/KTIJ-19369#focus=Comments-27-5181027.0-0
+@Suppress("DSL_SCOPE_VIOLATION")
+plugins {
+    `java-library`
+    `maven-publish`
+    signing
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.nexus.publish)
+}
+
+// ------------------------------------------------------ repositories
+
+val repositories =
+    arrayOf(
+        "https://oss.sonatype.org/content/repositories/snapshots/",
+        "https://s01.oss.sonatype.org/content/repositories/snapshots/",
+    )
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    repositories.forEach { maven(it) }
+}
+
+// ------------------------------------------------------ dependencies
 
 dependencies {
-    implementation(kotlin("stdlib", kotlinVersion))
-    implementation(kotlin("reflect", kotlinVersion))
-    api("net.sourceforge.htmlunit:htmlunit:$htmlUnitVersion")
-    api("org.jsoup:jsoup:$jsoupVersion")
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
+    api(libs.jsoup)
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-    testImplementation("org.mockito:mockito-inline:2.8.47")
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-alpha01")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.jupiter.api)
+    testImplementation(libs.jupiter.params)
+    testImplementation(libs.jupiter.engine)
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+signing {
+    val signingKey =
+        providers
+            .environmentVariable("GPG_SIGNING_KEY")
+            .orElse(providers.gradleProperty("gpg.key"))
+    val signingPassphrase =
+        providers
+            .environmentVariable("GPG_SIGNING_PASSPHRASE")
+            .orElse(providers.gradleProperty("gpg.passphrase"))
+
+    if (signingKey.isPresent && signingPassphrase.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), signingPassphrase.get())
+        val extension = extensions.getByName("publishing") as PublishingExtension
+        sign(extension.publications)
+    }
 }
 
 publishing {
     publications {
-        create<MavenPublication>(artifactID) {
+        create<MavenPublication>(Meta.NAME) {
             groupId = project.group as String
-            artifactId = artifactID
+            artifactId = Meta.NAME
             version = project.version as String
-            from(components["java"])
+            from(components["kotlin"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            pom {
+                name.set(project.name)
+                description.set(Meta.DESC)
+                url.set("https://github.com/${Meta.GITHUB_REPO}")
+                licenses {
+                    license {
+                        name.set(Meta.LICENSE)
+                        url.set("https://opensource.org/licenses/Apache-2.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("grahamdaley")
+                        name.set("Graham Daley")
+                    }
+                }
+                scm {
+                    url.set("https://github.com/${Meta.GITHUB_REPO}.git")
+                    connection.set("scm:git:git://github.com/${Meta.GITHUB_REPO}.git")
+                    developerConnection.set("scm:git:git://github.com/#${Meta.GITHUB_REPO}.git")
+                }
+                issueManagement {
+                    url.set("https://github.com/${Meta.GITHUB_REPO}/issues")
+                }
+            }
         }
     }
 }
 
-fun findProperty(s: String) = project.findProperty(s) as String?
-bintray {
-    user = findProperty("bintrayUser")
-    key = findProperty("bintrayApiKey")
-    publish = true
-    override = true
-    setPublications(artifactID)
-    pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-        repo = project.group as String
-        name = artifactID
-        githubRepo = "grahamdaley/kwebparser"
-        vcsUrl = "https://github.com/grahamdaley/kwebparser.git"
-        desc = "A simple webparser using htmlunit and written in Kotlin"
-        setLicenses("Apache-2.0")
-        version(delegateClosureOf<BintrayExtension.VersionConfig>{
-            name = project.version as String
-            vcsTag = project.version as String
-        })
-    })
-}
-
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri(Meta.RELEASE))
+            snapshotRepositoryUrl.set(uri(Meta.SNAPSHOT))
+            val ossrhUsername =
+                providers
+                    .environmentVariable("OSSRH_USERNAME")
+                    .orElse(providers.gradleProperty("ossrh.username"))
+            val ossrhPassword =
+                providers
+                    .environmentVariable("OSSRH_PASSWORD")
+                    .orElse(providers.gradleProperty("ossrh.password"))
+            if (ossrhUsername.isPresent && ossrhPassword.isPresent) {
+                username.set(ossrhUsername.get())
+                password.set(ossrhPassword.get())
+            }
+        }
     }
 }

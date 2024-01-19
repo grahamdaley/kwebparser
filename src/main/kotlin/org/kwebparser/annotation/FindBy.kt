@@ -23,6 +23,7 @@ import org.kwebparser.support.By
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.CLASS, AnnotationTarget.FILE)
 @PageFactoryFinder(FindBy.FindByBuilder::class)
+@Suppress("LongParameterList")
 annotation class FindBy(
     val id: String = "",
     val name: String = "",
@@ -30,16 +31,16 @@ annotation class FindBy(
     val css: String = "",
     val tagName: String = "",
     val linkText: String = "",
-    val partialLinkText: String = ""
+    val partialLinkText: String = "",
 ) {
-
     class FindByBuilder : org.kwebparser.AbstractFindByBuilder() {
-        override fun buildIt(annotation: Annotation, property: Any): By {
+        override fun buildIt(
+            annotation: Annotation,
+            property: Any,
+        ): By {
             val findBy = annotation as FindBy
             assertValidFindBy(findBy)
             return buildByFromFindBy(findBy)!!
         }
-
     }
-
 }

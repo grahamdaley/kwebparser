@@ -3,9 +3,6 @@ package org.kwebparser.support
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.Serializable
-import java.util.*
-import kotlin.NoSuchElementException
-import kotlin.String
 
 /**
  * Mechanism used to locate elements within a document using a series of  lookups. This class will
@@ -19,7 +16,6 @@ import kotlin.String
  * This means that the list of elements returned may not be in document order.
  */
 class ByAll(private val bys: List<By>) : By(), Serializable {
-
     override fun findElement(searchFrom: Element): Element {
         for (by in bys) {
             val elements = by.findElements(searchFrom)
@@ -55,5 +51,4 @@ class ByAll(private val bys: List<By>) : By(), Serializable {
     companion object {
         private const val serialVersionUID = 4573668832699497306L
     }
-
 }

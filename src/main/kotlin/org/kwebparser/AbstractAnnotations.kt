@@ -9,7 +9,6 @@ import org.kwebparser.support.By
  * [org.kwebparser.annotation.FindAll] annotations.
  */
 abstract class AbstractAnnotations {
-
     /**
      * Defines whether or not given element
      * should be returned from cache on further calls.
@@ -25,5 +24,4 @@ abstract class AbstractAnnotations {
      * @return By object
      */
     abstract fun buildBy(): By
-
 }

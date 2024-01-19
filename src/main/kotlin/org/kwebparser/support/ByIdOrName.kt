@@ -3,7 +3,6 @@ package org.kwebparser.support
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import java.io.Serializable
-import java.util.*
 
 class ByIdOrName(private val idOrName: String) : By(), Serializable {
     private val idFinder: By = By.id(idOrName)
@@ -12,7 +11,7 @@ class ByIdOrName(private val idOrName: String) : By(), Serializable {
     override fun findElement(searchFrom: Element): Element {
         return try {
             this.idFinder.findElement(searchFrom)
-        } catch (nse: NoSuchElementException) {
+        } catch (_: NoSuchElementException) {
             this.nameFinder.findElement(searchFrom)
         }
     }
