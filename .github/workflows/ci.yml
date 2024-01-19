@@ -17,7 +17,7 @@ jobs:
         uses: github/super-linter/slim@v5
         env:
           DEFAULT_BRANCH: main
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           LOG_LEVEL: NOTICE
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_KOTLIN: true
