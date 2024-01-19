@@ -1,5 +1,5 @@
 group = "io.github.grahamdaley"
-version = "1.0.0"
+version = "1.0.1-SNAPSHOT
 
 object Meta {
     const val NAME = "kwebparser"
