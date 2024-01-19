@@ -4,7 +4,7 @@ import org.kwebparser.annotation.FindAll
 import org.kwebparser.annotation.FindBy
 import org.kwebparser.annotation.FindBys
 import org.kwebparser.support.By
-import java.util.*
+import java.util.Locale
 
 abstract class AbstractFindByBuilder {
     abstract fun buildIt(
