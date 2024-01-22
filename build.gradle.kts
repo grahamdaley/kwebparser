@@ -103,6 +103,7 @@ publishing {
                     developer {
                         id.set("grahamdaley")
                         name.set("Graham Daley")
+                        email.set("graham@daleybread.com")
                     }
                 }
                 scm {
