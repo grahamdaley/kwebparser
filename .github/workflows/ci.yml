@@ -16,7 +16,7 @@ jobs:
       - name: Run ktlint
         uses: github/super-linter/slim@v5
         env:
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           LOG_LEVEL: NOTICE
           VALIDATE_ALL_CODEBASE: false

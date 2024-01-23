@@ -4,7 +4,7 @@
 # Should be called right after ./release.sh
 #
 # Prerequisites
-#   - Clean git status (no uncommitted changes in branch 'main')
+#   - Clean git status (no uncommitted changes in branch 'master')
 #
 # Parameters
 #   1. Next version w/o '-SNAPSHOT'
@@ -34,9 +34,9 @@ if ! [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; th
 fi
 
 printf "\n# Check clean status\n\n"
-git checkout main
+git checkout master
 if ! git diff --no-ext-diff --quiet --exit-code; then
-    echo "Unable to release. You have uncommitted changes in the branch 'main'."
+    echo "Unable to release. You have uncommitted changes in the branch 'master'."
     exit 1
 fi
 
@@ -45,6 +45,6 @@ sed -E -i.versionsBackup "s/\"io.github.grahamdaley:kwebparser:.*-SNAPSHOT\"/\"k
 sed -i.versionsBackup "s/^version = \".*\"$/version = \""$SNAPSHOT_VERSION"\" build.gradle.kts
 find . -name "*.versionsBackup" -exec rm {} \;
 git commit -am "Next is $SNAPSHOT_VERSION"
-git push origin main
+git push origin master
 
 printf "\n\n\n<<--==  Bump KWebParser to %s  ==-->>\n\n" "$SNAPSHOT_VERSION"

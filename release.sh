@@ -3,14 +3,14 @@
 # Script to release KWebParser.
 #
 # Prerequisites
-#   - Clean git status (no uncommitted changes in branch 'main')
+#   - Clean git status (no uncommitted changes in branch 'master')
 #   - No tag for the specified version
 #
 # Parameters
 #   1. New semantic version number
 #
 # What it does
-#   1. Build branch 'main'
+#   1. Build branch 'master'
 #   2. Bump version to '<version>'
 #   3. Commit version change
 #   4. Create and push tag 'v<version>'
@@ -43,14 +43,14 @@ if git rev-parse -q --verify "refs/tags/$VERSION_TAG" >/dev/null; then
 fi
 
 printf "\n# Check clean status\n\n"
-git checkout main
+git checkout master
 if ! git diff --no-ext-diff --quiet --exit-code; then
-    echo "Unable to release. You have uncommitted changes in the branch 'main'."
+    echo "Unable to release. You have uncommitted changes in the branch 'master'."
     exit 1
 fi
 
 printf "\n\n\n# Build main\n\n"
-git pull origin main
+git pull origin master
 ./gradlew build || { echo "Build failed" ; exit 1; }
 
 printf "\n\n\n# Bump to %s\n\n" "$VERSION"
