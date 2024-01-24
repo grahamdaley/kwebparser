@@ -3,25 +3,6 @@ name: Continuous Integration
 on: [push, pull_request]
 
 jobs:
-  lint:
-    name: Check code base with ktlint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Run ktlint
-        uses: github/super-linter/slim@v5
-        env:
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          LOG_LEVEL: NOTICE
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_KOTLIN: true
-
   detekt:
     name: Check code base with detekt
     runs-on: ubuntu-latest

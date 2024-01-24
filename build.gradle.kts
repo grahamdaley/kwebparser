@@ -30,7 +30,7 @@ plugins {
 val repositories =
     arrayOf(
         "https://oss.sonatype.org/content/repositories/snapshots/",
-        "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        "https://s01.oss.sonatype.org/content/repositories/snapshots/",
     )
 
 repositories {
