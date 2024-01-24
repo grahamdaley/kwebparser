@@ -49,7 +49,7 @@ if ! git diff --no-ext-diff --quiet --exit-code; then
     exit 1
 fi
 
-printf "\n\n\n# Build main\n\n"
+printf "\n\n\n# Build master\n\n"
 git pull origin master
 ./gradlew build || { echo "Build failed" ; exit 1; }
 
@@ -58,7 +58,7 @@ sed -E -i.versionsBackup "s/\"io.github.grahamdaley:kwebparser:.*\"/\"kwebparser
 sed -i.versionsBackup "s/^version = \".*\"$/version = \"$VERSION\"/" build.gradle.kts
 find . -name "*.versionsBackup" -exec rm {} \;
 git commit -am "Bump to $VERSION"
-git push origin main
+git push origin master
 
 printf "\n\n\n# Tag and push %s\n\n" "$VERSION_TAG"
 git tag "$VERSION_TAG"
