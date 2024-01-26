@@ -54,9 +54,7 @@ dependencies {
     testImplementation(libs.jupiter.engine)
 }
 
-repositories {
-    mavenCentral()
-}
+// ------------------------------------------------------ tasks
 
 java {
     withSourcesJar()
@@ -138,4 +136,8 @@ nexusPublishing {
             }
         }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
