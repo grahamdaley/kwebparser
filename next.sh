@@ -41,8 +41,8 @@ if ! git diff --no-ext-diff --quiet --exit-code; then
 fi
 
 printf "\n\n\n# Bump to %s\n\n" "$SNAPSHOT_VERSION"
-sed -E -i.versionsBackup "s/\"io.github.grahamdaley:kwebparser:.*-SNAPSHOT\"/\"kwebparser:$SNAPSHOT_VERSION\"" README.md
-sed -i.versionsBackup "s/^version = \".*\"$/version = \"$SNAPSHOT_VERSION\"" build.gradle.kts
+sed -E -i.versionsBackup "s/\"io.github.grahamdaley:kwebparser:.*-SNAPSHOT\"/\"kwebparser:$SNAPSHOT_VERSION\"/" README.md
+sed -i.versionsBackup "s/^version = \".*\"$/version = \"$SNAPSHOT_VERSION\"/" build.gradle.kts
 find . -name "*.versionsBackup" -exec rm {} \;
 git commit -am "Next is $SNAPSHOT_VERSION"
 git push origin master
