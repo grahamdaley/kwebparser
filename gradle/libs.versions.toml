@@ -1,7 +1,7 @@
 [versions]
 detekt = "1.23.5"
 dokka = "1.9.10"
-kotlin = "1.9.23"
+kotlin = "1.9.24"
 ktlint = "12.1.0"
 junit = "5.10.2"
 jsoup = "1.17.2"
