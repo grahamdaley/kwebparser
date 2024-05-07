@@ -2,7 +2,7 @@
 detekt = "1.23.5"
 dokka = "1.9.10"
 kotlin = "1.9.23"
-ktlint = "12.1.0"
+ktlint = "12.1.1"
 junit = "5.10.2"
 jsoup = "1.17.2"
 maven-publish = "0.28.0"
